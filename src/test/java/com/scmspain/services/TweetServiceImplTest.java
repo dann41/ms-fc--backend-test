@@ -11,7 +11,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class TweetServiceTest {
+public class TweetServiceImplTest {
     private EntityManager entityManager;
     private MetricWriter metricWriter;
     private TweetService tweetService;
@@ -21,7 +21,7 @@ public class TweetServiceTest {
         this.entityManager = mock(EntityManager.class);
         this.metricWriter = mock(MetricWriter.class);
 
-        this.tweetService = new TweetService(entityManager, metricWriter);
+        this.tweetService = new TweetServiceImpl(entityManager, metricWriter);
     }
 
     @Test
