@@ -28,7 +28,7 @@ public interface TweetService {
 
     /**
      * Discards a tweet
-     * @param tweetId
+     * @param tweetId id of the tweet
      */
     void discardTweet(Long tweetId);
 

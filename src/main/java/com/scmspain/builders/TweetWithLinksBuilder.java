@@ -49,7 +49,7 @@ public class TweetWithLinksBuilder implements TweetBuilder {
         private String shortText;
         private List<String> links;
 
-        public LinkExtractor(String text) {
+        LinkExtractor(String text) {
             this.text = text;
             extractLinks();
         }
@@ -64,11 +64,11 @@ public class TweetWithLinksBuilder implements TweetBuilder {
             }
         }
 
-        public String getShortText() {
+        String getShortText() {
             return shortText;
         }
 
-        public List<String> getLinks() {
+        List<String> getLinks() {
             return links;
         }
 

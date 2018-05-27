@@ -14,7 +14,8 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 public class TweetController {
-    private TweetService tweetService;
+
+    private final TweetService tweetService;
 
     public TweetController(TweetService tweetService) {
         this.tweetService = tweetService;

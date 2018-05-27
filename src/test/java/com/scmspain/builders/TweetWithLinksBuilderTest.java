@@ -15,7 +15,7 @@ public class TweetWithLinksBuilderTest {
     private TweetWithLinksBuilder builder;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         builder = new TweetWithLinksBuilder();
     }
 

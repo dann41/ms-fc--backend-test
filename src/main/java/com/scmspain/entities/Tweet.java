@@ -21,7 +21,7 @@ public class Tweet {
     @Column(nullable = false, length = MAX_TWEET_LENGTH)
     private String tweet;
 
-    @Column(name="pre2015migrationstatus", nullable=true)
+    @Column(name="pre2015migrationstatus")
     private Long pre2015MigrationStatus = 0L;
 
     @OneToMany(targetEntity=TweetLink.class, cascade=CascadeType.ALL, mappedBy="tweet")
