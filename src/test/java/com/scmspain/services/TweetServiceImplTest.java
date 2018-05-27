@@ -1,34 +1,32 @@
 package com.scmspain.services;
 
 import com.scmspain.entities.Tweet;
+import com.scmspain.repository.TweetRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.actuate.metrics.writer.MetricWriter;
-
-import javax.persistence.EntityManager;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 public class TweetServiceImplTest {
-    private EntityManager entityManager;
+    private TweetRepository repository;
     private MetricWriter metricWriter;
     private TweetService tweetService;
 
     @Before
     public void setUp() throws Exception {
-        this.entityManager = mock(EntityManager.class);
+        this.repository = mock(TweetRepository.class);
         this.metricWriter = mock(MetricWriter.class);
-
-        this.tweetService = new TweetServiceImpl(entityManager, metricWriter);
+        this.tweetService = new TweetServiceImpl(repository, metricWriter);
     }
 
     @Test
     public void shouldInsertANewTweet() throws Exception {
         tweetService.publishTweet("Guybrush Threepwood", "I am Guybrush Threepwood, mighty pirate.");
 
-        verify(entityManager).persist(any(Tweet.class));
+        verify(repository).save(any(Tweet.class));
     }
 
     @Test(expected = IllegalArgumentException.class)

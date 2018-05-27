@@ -7,12 +7,15 @@ import javax.persistence.Id;
 
 @Entity
 public class Tweet {
+
+    public static final int MAX_TWEET_LENGTH = 140;
+
     @Id
     @GeneratedValue
     private Long id;
     @Column(nullable = false)
     private String publisher;
-    @Column(nullable = false, length = 140)
+    @Column(nullable = false, length = MAX_TWEET_LENGTH)
     private String tweet;
     @Column (nullable=true)
     private Long pre2015MigrationStatus = 0L;
