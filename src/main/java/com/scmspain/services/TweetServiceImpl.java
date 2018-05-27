@@ -25,11 +25,6 @@ public class TweetServiceImpl implements TweetService {
         this.metricWriter = metricWriter;
     }
 
-    /**
-     * Push tweet to repository
-     * @param publisher creator of the Tweet
-     * @param text Content of the Tweet
-     */
     @Override
     public void publishTweet(String publisher, String text) {
         if (publisher != null && publisher.length() > 0 && text != null && text.length() > 0) {
@@ -45,20 +40,11 @@ public class TweetServiceImpl implements TweetService {
         }
     }
 
-    /**
-     * Recover tweet from repository
-     * @param id id of the Tweet to retrieve
-     * @return retrieved Tweet
-     */
     @Override
     public Tweet getTweet(Long id) {
         return repository.findOne(id);
     }
 
-    /**
-     * Retrieves all tweets from repository
-     * @return retrieved Tweet
-     */
     @Override
     public List<Tweet> listAllTweets() {
         this.metricWriter.increment(new Delta<Number>("times-queried-tweets", 1));
@@ -67,10 +53,17 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public void discardTweet(Long tweetId) {
+        this.metricWriter.increment(new Delta<Number>("discarded-tweets", 1));
         Tweet tweet = getTweet(tweetId);
         if (tweet == null) {
             throw new EntityNotFoundException();
         }
         tweet.setDiscarded(true);
+    }
+
+    @Override
+    public List<Tweet> listDiscardedTweets() {
+        this.metricWriter.increment(new Delta<Number>("times-queried-discarded-tweets", 1));
+        return repository.findAllDiscardedSortedByIdDesc();
     }
 }

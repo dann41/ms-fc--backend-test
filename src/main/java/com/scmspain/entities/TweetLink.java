@@ -19,24 +19,12 @@ public class TweetLink {
     @JsonManagedReference
     private Tweet tweet;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getHref() {
         return href;
     }
 
     public void setHref(String href) {
         this.href = href;
-    }
-
-    public Tweet getTweet() {
-        return tweet;
     }
 
     public void setTweet(Tweet tweet) {

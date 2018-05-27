@@ -31,10 +31,15 @@ public class TweetController {
         this.tweetService.publishTweet(publishTweetCommand.getPublisher(), publishTweetCommand.getTweet());
     }
 
-    @PostMapping("/discard")
+    @PostMapping("/discarded")
     @ResponseStatus(OK)
     public void discardTweet(@RequestBody DiscardTweetCommand discardTweetCommand) {
         this.tweetService.discardTweet(discardTweetCommand.getTweet());
+    }
+
+    @GetMapping("/discarded")
+    public List<Tweet> listDiscardedTweets() {
+        return this.tweetService.listDiscardedTweets();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

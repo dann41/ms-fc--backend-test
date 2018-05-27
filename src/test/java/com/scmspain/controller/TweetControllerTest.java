@@ -83,6 +83,16 @@ public class TweetControllerTest {
                 .andExpect(status().is(404));
     }
 
+    @Test
+    public void shouldReturnAllDiscardedTweets() throws Exception {
+        MvcResult getResult = mockMvc.perform(get("/discarded"))
+                .andExpect(status().is(200))
+                .andReturn();
+
+        String content = getResult.getResponse().getContentAsString();
+        assertThat(new ObjectMapper().readValue(content, List.class).size()).isEqualTo(1);
+    }
+
     private MockHttpServletRequestBuilder newTweet(String publisher, String tweet) {
         return post("/tweet")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -90,7 +100,7 @@ public class TweetControllerTest {
     }
 
     private MockHttpServletRequestBuilder discardTweet(Long id) {
-        return post("/discard")
+        return post("/discarded")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(format("{\"tweet\": %d}", id));
     }

@@ -1,6 +1,7 @@
 package com.scmspain.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
@@ -29,6 +30,7 @@ public class Tweet {
     private List<TweetLink> links;
 
     @Column(nullable = false)
+    @JsonIgnore
     private Boolean discarded;
 
     public Tweet() {
