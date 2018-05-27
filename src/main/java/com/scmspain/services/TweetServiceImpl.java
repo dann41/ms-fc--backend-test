@@ -1,5 +1,6 @@
 package com.scmspain.services;
 
+import com.scmspain.builders.TweetBuilder;
 import com.scmspain.entities.Tweet;
 import com.scmspain.repository.TweetRepository;
 import org.springframework.boot.actuate.metrics.writer.Delta;
@@ -13,10 +14,12 @@ import java.util.List;
 @Transactional
 public class TweetServiceImpl implements TweetService {
 
+    private final TweetBuilder builder;
     private final TweetRepository repository;
     private final MetricWriter metricWriter;
 
-    public TweetServiceImpl(TweetRepository repository, MetricWriter metricWriter) {
+    public TweetServiceImpl(TweetBuilder tweetBuilder, TweetRepository repository, MetricWriter metricWriter) {
+        this.builder = tweetBuilder;
         this.repository = repository;
         this.metricWriter = metricWriter;
     }
@@ -28,15 +31,16 @@ public class TweetServiceImpl implements TweetService {
      */
     @Override
     public void publishTweet(String publisher, String text) {
-        if (publisher != null && publisher.length() > 0 && text != null && text.length() > 0 && text.length() < 140) {
-            Tweet tweet = new Tweet();
-            tweet.setTweet(text);
-            tweet.setPublisher(publisher);
-
-            this.metricWriter.increment(new Delta<Number>("published-tweets", 1));
-            repository.save(tweet);
+        if (publisher != null && publisher.length() > 0 && text != null && text.length() > 0) {
+            Tweet tweet = builder.buildTweet(publisher, text);
+            if (tweet.getTweet().length() <= Tweet.MAX_TWEET_LENGTH) {
+                metricWriter.increment(new Delta<Number>("published-tweets", 1));
+                repository.save(tweet);
+            } else {
+                throw new IllegalArgumentException("Tweet must not be greater than 140 characters");
+            }
         } else {
-            throw new IllegalArgumentException("Tweet must not be greater than 140 characters");
+            throw new IllegalArgumentException("Tweet or publisher must not be empty");
         }
     }
 
@@ -59,4 +63,5 @@ public class TweetServiceImpl implements TweetService {
         this.metricWriter.increment(new Delta<Number>("times-queried-tweets", 1));
         return repository.findAllSortedByIdDesc();
     }
+
 }

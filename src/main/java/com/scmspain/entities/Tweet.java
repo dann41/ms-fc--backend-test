@@ -1,9 +1,9 @@
 package com.scmspain.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Tweet {
@@ -19,6 +19,11 @@ public class Tweet {
     private String tweet;
     @Column (nullable=true)
     private Long pre2015MigrationStatus = 0L;
+
+    @OneToMany(targetEntity=TweetLink.class, cascade=CascadeType.ALL, mappedBy="tweet")
+    @Column
+    @JsonBackReference
+    private List<TweetLink> links;
 
     public Tweet() {
     }
@@ -55,4 +60,11 @@ public class Tweet {
         this.pre2015MigrationStatus = pre2015MigrationStatus;
     }
 
+    public void setLinks(List<TweetLink> links) {
+        this.links = links;
+    }
+
+    public List<TweetLink> getLinks() {
+        return links;
+    }
 }
