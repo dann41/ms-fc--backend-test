@@ -2,6 +2,7 @@ package com.scmspain.services;
 
 import com.scmspain.builders.TweetBuilder;
 import com.scmspain.entities.Tweet;
+import com.scmspain.exceptions.EntityNotFoundException;
 import com.scmspain.repository.TweetRepository;
 import org.springframework.boot.actuate.metrics.writer.Delta;
 import org.springframework.boot.actuate.metrics.writer.MetricWriter;
@@ -64,4 +65,12 @@ public class TweetServiceImpl implements TweetService {
         return repository.findAllSortedByIdDesc();
     }
 
+    @Override
+    public void discardTweet(Long tweetId) {
+        Tweet tweet = getTweet(tweetId);
+        if (tweet == null) {
+            throw new EntityNotFoundException();
+        }
+        tweet.setDiscarded(true);
+    }
 }

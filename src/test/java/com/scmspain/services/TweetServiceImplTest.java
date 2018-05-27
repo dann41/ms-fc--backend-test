@@ -53,6 +53,17 @@ public class TweetServiceImplTest {
         tweetService.publishTweet(publisher, text);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowAnExceptionWhenPublisherIsEmpty() throws Exception {
+        // given
+        String publisher = "";
+        String text = "LeChuck? He's the guy that went to the Governor's for dinner and never wanted to leave. He fell for her in a big way, but she told him to drop dead. So he did. Then things really got ugly.";
+        when(builder.buildTweet(anyString(), anyString())).thenReturn(getTweet(publisher, text));
+
+        // when
+        tweetService.publishTweet(publisher, text);
+    }
+
     private Tweet getTweet(String publisher, String text) {
         Tweet tweet = new Tweet();
         tweet.setPublisher(publisher);

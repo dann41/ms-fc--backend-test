@@ -13,11 +13,14 @@ public class Tweet {
     @Id
     @GeneratedValue
     private Long id;
+
     @Column(nullable = false)
     private String publisher;
+
     @Column(nullable = false, length = MAX_TWEET_LENGTH)
     private String tweet;
-    @Column (nullable=true)
+
+    @Column(name="pre2015migrationstatus", nullable=true)
     private Long pre2015MigrationStatus = 0L;
 
     @OneToMany(targetEntity=TweetLink.class, cascade=CascadeType.ALL, mappedBy="tweet")
@@ -25,7 +28,11 @@ public class Tweet {
     @JsonBackReference
     private List<TweetLink> links;
 
+    @Column(nullable = false)
+    private Boolean discarded;
+
     public Tweet() {
+        discarded = false;
     }
 
     public Long getId() {
@@ -66,5 +73,13 @@ public class Tweet {
 
     public List<TweetLink> getLinks() {
         return links;
+    }
+
+    public void setDiscarded(boolean discarded) {
+        this.discarded = discarded;
+    }
+
+    public boolean getDiscarded() {
+        return discarded;
     }
 }

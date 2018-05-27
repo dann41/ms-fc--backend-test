@@ -2,18 +2,23 @@ package com.scmspain.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.scmspain.configuration.TestConfiguration;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -25,7 +30,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestConfiguration.class)
+@Sql("tweets.sql")
 public class TweetControllerTest {
+
     @Autowired
     private WebApplicationContext context;
 
@@ -56,21 +63,36 @@ public class TweetControllerTest {
 
     @Test
     public void shouldReturnAllPublishedTweets() throws Exception {
-        mockMvc.perform(newTweet("Yo", "How are you?"))
-                .andExpect(status().is(201));
-
         MvcResult getResult = mockMvc.perform(get("/tweet"))
                 .andExpect(status().is(200))
                 .andReturn();
 
         String content = getResult.getResponse().getContentAsString();
-        assertThat(new ObjectMapper().readValue(content, List.class).size()).isEqualTo(1);
+        assertThat(new ObjectMapper().readValue(content, List.class).size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldReturn200WhenDiscardingAnUnknownTweet() throws Exception {
+        mockMvc.perform(discardTweet(1L))
+                .andExpect(status().is(200));
+    }
+
+    @Test
+    public void shouldReturn404WhenDiscardingAnUnknownTweet() throws Exception {
+        mockMvc.perform(discardTweet(5L))
+                .andExpect(status().is(404));
     }
 
     private MockHttpServletRequestBuilder newTweet(String publisher, String tweet) {
         return post("/tweet")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(format("{\"publisher\": \"%s\", \"tweet\": \"%s\"}", publisher, tweet));
+    }
+
+    private MockHttpServletRequestBuilder discardTweet(Long id) {
+        return post("/discard")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(format("{\"tweet\": %d}", id));
     }
 
 }
